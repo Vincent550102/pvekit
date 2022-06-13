@@ -5,9 +5,10 @@ printhelp()
 	echo "Usage: $0 [options]
 Options:
   -h, --help                            display this help message and exit
-  -s, --start <vmid>                    stop vm from start
-  -e, --end <vmid>                      stop vm to end
-  -p, --parameter <stopparameter>       stop vm with stopparameter"
+  -s, --start <vmid>                    rollback vm from start
+  -e, --end <vmid>                      rollback vm to end
+  -n, --snapshotname <snapshotname>     snapshot name
+  -p, --parameter <srollbackparameter>  rollback vm with rollbackparameter"
 	exit 0
 }
 
@@ -20,7 +21,8 @@ fi
 
 startfrom=""
 endto=""
-stopparameter=""
+snapshotname=""
+rollbackparameter=""
 
 for a in $(seq 1 1 $argnum)
 do
@@ -37,9 +39,13 @@ do
                         shift
                         endto=$1
                         ;;
+                -n|--snapshotname)
+                        shift
+                        snapshotname=$1
+                        ;;
                 -p|--parameter)
                         shift
-                        stopparameter=$1
+                        rollbackparameter=$1
                         ;;
         esac
         shift
@@ -47,18 +53,26 @@ done
 
 if [ "$startfrom" = "" ] || [ "$endto" = "" ]
 then
-	echo "Please add your range of stop vm."
+	echo "Please add your range of rollback vm."
+	printhelp
+fi
+
+if [ "$snapshotname" = "" ]
+then
+	echo "Please add your snapshot name."
 	printhelp
 fi
 
 if  [ "$startfrom" -gt "$endto" ]
 then
-	echo "Please check your range of stop vm is vaild."
+	echo "Please check your range of rollback vm is vaild."
         printhelp
 fi
 
+
+
 for i in $(seq $startfrom $endto)
 do
-        qm stop $i $stopparameter &
+        qm rollback $i $snapshotname $rollbackparameter &
 done
-echo "successfully stop range of vm."
+echo "successfully rollback range of vm."

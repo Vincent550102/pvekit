@@ -4,10 +4,10 @@ printhelp()
 {
 	echo "Usage: $0 [options]
 Options:
-  -h, --help    display this help message and exit
-  -s, --start <vmid>    start vm from start
-  -e, --end <vmid>      start vm to end
-  -p, --parameter <startparameter>    start vm with startparameter"
+  -h, --help                            display this help message and exit
+  -s, --start <vmid>                    start vm from start
+  -e, --end <vmid>                      start vm to end
+  -p, --parameter <startparameter>      start vm with startparameter"
 	exit 0
 }
 
@@ -59,6 +59,6 @@ fi
 
 for i in $(seq $startfrom $endto)
 do
-        qm start $startparameter $i
+        qm start $i $startparameter &
 done
 echo "successfully start range of vm."
